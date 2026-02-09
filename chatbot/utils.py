@@ -1,6 +1,5 @@
 import sqlite3
 import json
-from ddgs import DDGS
 import wikipedia
 
 DB_FILE = "chatbot.db"
@@ -17,10 +16,16 @@ def init_db():
     conn.commit()
     conn.close()
 
+def normalize(text: str) -> str:
+    return text.lower().strip()
+
 def get_answer_from_db(question: str):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    cursor.execute("SELECT answer FROM knowledge_base WHERE question=?", (question,))
+    cursor.execute(
+        "SELECT answer FROM knowledge_base WHERE question=?",
+        (normalize(question),)
+    )
     row = cursor.fetchone()
     conn.close()
     return row[0] if row else None
@@ -30,37 +35,25 @@ def save_answer_to_db(question: str, answer: str):
     cursor = conn.cursor()
     cursor.execute(
         "INSERT OR REPLACE INTO knowledge_base (question, answer) VALUES (?, ?)",
-        (question, answer)
+        (normalize(question), answer)
     )
     conn.commit()
     conn.close()
 
 def fetch_from_web(query: str) -> str:
-    """
-    Try DuckDuckGo (ddgs) first with 'definition' appended.
-    If no snippet found, fallback to Wikipedia with disambiguation handling.
-    """
+    """Fetch answer from Wikipedia only."""
     try:
-        # DuckDuckGo search
-        with DDGS() as ddgs:
-            results = list(ddgs.text(query + " definition", max_results=3))
-            if results and "body" in results[0]:
-                return f"(DuckDuckGo) {results[0]['body']}"
-            else:
-                print("[DEBUG] DuckDuckGo returned no results, falling back to Wikipedia")
-
-        # Wikipedia fallback
         search_results = wikipedia.search(query)
         if search_results:
             try:
                 summary = wikipedia.summary(search_results[0], sentences=2)
                 return f"(Wikipedia) {summary}"
             except wikipedia.exceptions.DisambiguationError as e:
-                return f"(Wikipedia) {wikipedia.summary(e.options[0], sentences=2)}"
-
-        return "No answer found (both sources empty)."
+                summary = wikipedia.summary(e.options[0], sentences=2)
+                return f"(Wikipedia) {summary}"
+        return "No answer found on Wikipedia."
     except Exception as e:
-        return f"Web search error: {e}"
+        return f"Wikipedia search error: {e}"
 
 def seed_db_from_json():
     try:
@@ -69,7 +62,5 @@ def seed_db_from_json():
         for q, a in knowledge.items():
             save_answer_to_db(q, a)
         print("Database seeded from knowledge.json")
-    except FileNotFoundError:
-        print("No knowledge.json found, skipping seed.")
     except Exception as e:
-        print(f"Skipping DB seed due to error: {e}")
+        print(f"Skipping DB seed: {e}")

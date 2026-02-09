@@ -3,41 +3,33 @@ from chatbot.utils import get_answer_from_db, save_answer_to_db, fetch_from_web
 def classify_intent(user_input: str) -> str:
     text = user_input.lower()
     if "mdso" in text:
-        return "MDSO"
+        return "mdso"
     elif "oss" in text and "bss" in text:
-        return "OSS_BSS"
+        return "oss bss"
     elif "oss" in text:
-        return "OSS"
+        return "oss"
     elif "bss" in text:
-        return "BSS"
+        return "bss"
     elif "multi-domain" in text:
-        return "MULTI_DOMAIN"
+        return "multi-domain orchestration"
     elif "orchestration" in text:
-        return "ORCHESTRATION"
+        return "orchestration"
     else:
-        return "UNKNOWN"
+        return user_input  # fallback = raw query
 
 def get_intent_response(user_input: str) -> str:
     intent = classify_intent(user_input)
+    key = intent.lower().strip()
 
-    if intent == "MDSO":
-        return "Blue Planet Multi-Domain Service Orchestration (MDSO) is Ciena's open software solution..."
-    elif intent == "OSS_BSS":
-        return "OSS manages network operations, BSS handles customer-facing processes..."
-    elif intent == "OSS":
-        return "OSS are tools for managing network operations..."
-    elif intent == "BSS":
-        return "BSS are tools for managing customer-facing processes..."
-    elif intent == "MULTI_DOMAIN":
-        return "Multi-Domain networking refers to managing and orchestrating across multiple domains..."
-    elif intent == "ORCHESTRATION":
-        return "Orchestration means automating the coordination of multiple systems..."
-    else:
-        # Fallback: DB first, then web, then save
-        answer = get_answer_from_db(user_input)
-        if answer:
-            return answer
-        answer = fetch_from_web(user_input)
-        print(f"[DEBUG] fetch_from_web returned: {answer}")
-        save_answer_to_db(user_input, answer)
+    # Use DB first for known intents
+    answer = get_answer_from_db(key)
+    if answer:
         return answer
+
+    # Otherwise, fetch from Wikipedia
+    answer = fetch_from_web(user_input)
+    if answer:
+        save_answer_to_db(key, answer)
+        return answer
+
+    return f"Sorry, I couldn't find an answer for '{user_input}'."

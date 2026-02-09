@@ -1,22 +1,38 @@
 chatbot-mdso/
 │
-├── app.py                # Flask backend (entry point)
+├── app.py
+├── chatbot.db
 ├── requirements.txt
 ├── HOW_TO_RUN.md
+├── project_struct.txt
+│
+├── data/
+│   ├── training_data.json
+│   └── knowledge.json
 │
 ├── chatbot/
-│   ├── __init__.py
-│   ├── intents.py        # Intent classification + fallback
-│   ├── utils.py          # DB + web search helpers
+│   ├── intents.py
 │   ├── mdso_client.py
-│
-├── mdso_mock/
-│   ├── __init__.py
-│   └── server.py
+│   ├── utils.py
+│   └── __pycache__/
 │
 ├── ui/
 │   └── streamlit_ui.py
 │
-└── data/
-    ├── training_data.json
-    └── knowledge.json
+├── mdso_mock/
+│   └── server.py
+│
+├── venv/
+│   ├── Include/
+│   ├── Lib/
+│   ├── Scripts/
+│   ├── share/
+│   ├── etc/
+│   └── pyvenv.cfg
+│
+├── .vscode/
+│   ├── launch.json
+│   └── tasks.json
+│
+└── __pycache__/
+    └── app.cpython-312.pyc
