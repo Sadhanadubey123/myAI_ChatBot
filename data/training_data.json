@@ -1,0 +1,7 @@
+[
+    {"text": "provision a new service", "intent": "provision"},
+    {"text": "check service status", "intent": "status"},
+    {"text": "optimize bandwidth", "intent": "optimize"},
+    {"text": "what is MDSO", "intent": "knowledge"},
+    {"text": "explain Blue Planet MDSO", "intent": "knowledge"}
+]

@@ -1,0 +1,46 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Mock MDSO API",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/mdso_mock/server.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "FLASK_ENV": "development"
+      }
+    },
+    {
+      "name": "Run Chatbot Backend",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/app.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Streamlit UI",
+      "type": "python",
+      "request": "launch",
+      "module": "streamlit",
+      "args": [
+        "run",
+        "${workspaceFolder}/ui/streamlit_ui.py",
+        "--server.headless=false",
+        "--server.port=8581"
+      ],
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run All (API + Backend + UI)",
+      "configurations": [
+        "Run Mock MDSO API",
+        "Run Chatbot Backend",
+        "Run Streamlit UI"
+      ]
+    }
+  ]
+}
