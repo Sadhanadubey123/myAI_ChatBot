@@ -16,7 +16,12 @@
       "name": "Run Chatbot Backend",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/app.py",
+      "module": "flask",
+      "env": {
+        "FLASK_APP": "app.py",
+        "FLASK_ENV": "development"
+      },
+      "args": ["run", "--port", "8000"],
       "console": "integratedTerminal"
     },
     {

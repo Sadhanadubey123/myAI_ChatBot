@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Kill All Servers",
+        "type": "shell",
+        "command": "taskkill /F /IM python.exe",
+        "problemMatcher": []
+      }
+    ]
+}

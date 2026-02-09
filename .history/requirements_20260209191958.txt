@@ -1,0 +1,6 @@
+flask==3.0.2
+requests==2.31.0
+duckduckgo-search==6.1.0
+numpy>=1.26.4
+scikit-learn
+streamlit
